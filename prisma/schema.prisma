@@ -1,0 +1,64 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("USER")
+  createdAt DateTime @default(now())
+}
+
+// ... (User and Client models remain the same)
+
+model Client {
+  id            Int      @id @default(autoincrement())
+  name          String
+  email         String   @unique
+  location      String
+  contractStart DateTime @default(now())
+  contractEnd   DateTime 
+  posts         Post[]
+  createdAt     DateTime @default(now())
+}
+
+model Post {
+  id        Int         @id @default(autoincrement())
+  title     String
+  content   String?     @default("ACTIVE DEPLOYMENT")
+  clientId  Int
+  client    Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  guards    PostGuard[]
+  createdAt DateTime    @default(now()) // <--- Add this line
+}
+
+model Guard {
+  id            Int         @id @default(autoincrement())
+  name          String
+  idNumber      String      @unique
+  phoneNumber   String?     // Keeping this optional for now allows existing rows to stay null
+  homeResidence String
+  posts         PostGuard[]
+  createdAt     DateTime    @default(now())
+  
+  // Update this line to include @default(now())
+  updatedAt     DateTime    @default(now()) @updatedAt 
+}
+
+model PostGuard {
+  postId  Int
+  guardId Int
+  // Cascade is already correctly here
+  post    Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  guard   Guard @relation(fields: [guardId], references: [id], onDelete: Cascade)
+
+  @@id([postId, guardId])
+}

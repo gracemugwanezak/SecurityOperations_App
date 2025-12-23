@@ -1,0 +1,110 @@
+{
+  "info": {
+    "_postman_id": "b1f0d5b0-3d4a-4d7a-b6e1-123456789abc",
+    "name": "Topsec Backend - Thunder/Postman",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Client",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Acme Corp\",\n  \"email\": \"contact@acme.test\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/clients", "host": ["{{baseUrl}}"], "path": ["clients"] }
+      }
+    },
+    {
+      "name": "Create Post",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Gate Post A\",\n  \"content\": \"Main gate duty\",\n  \"clientId\": 1\n}" },
+        "url": { "raw": "{{baseUrl}}/posts", "host": ["{{baseUrl}}"], "path": ["posts"] }
+      }
+    },
+    {
+      "name": "Create Guard",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"John Doe\"\n}" },
+        "url": { "raw": "{{baseUrl}}/guards", "host": ["{{baseUrl}}"], "path": ["guards"] }
+      }
+    },
+    {
+      "name": "Assign Guard to Post",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/posts/{{postId}}/guards/{{guardId}}", "host": ["{{baseUrl}}"], "path": ["posts","{{postId}}","guards","{{guardId}}"] }
+      }
+    },
+    {
+      "name": "Get Post",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/posts/{{postId}}", "host": ["{{baseUrl}}"], "path": ["posts","{{postId}}"] }
+      }
+    },
+    {
+      "name": "Remove Guard from Post",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/posts/{{postId}}/guards/{{guardId}}", "host": ["{{baseUrl}}"], "path": ["posts","{{postId}}","guards","{{guardId}}"] }
+      }
+    },
+    {
+      "name": "List Clients",
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/clients", "host": ["{{baseUrl}}"], "path": ["clients"] } }
+    },
+    {
+      "name": "List Posts",
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/posts", "host": ["{{baseUrl}}"], "path": ["posts"] } }
+    },
+    {
+      "name": "List Guards",
+      "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/guards", "host": ["{{baseUrl}}"], "path": ["guards"] } }
+    },
+    {
+      "name": "Update Client",
+      "request": {
+        "method": "PUT",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Acme Corp Ltd\"\n}" },
+        "url": { "raw": "{{baseUrl}}/clients/{{clientId}}", "host": ["{{baseUrl}}"], "path": ["clients","{{clientId}}"] }
+      }
+    },
+    {
+      "name": "Delete Guard",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/guards/{{guardId}}", "host": ["{{baseUrl}}"], "path": ["guards","{{guardId}}"] }
+      }
+    }
+  ]
+}
