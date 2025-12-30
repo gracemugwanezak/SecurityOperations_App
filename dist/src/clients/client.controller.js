@@ -15,76 +15,64 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClientsController = void 0;
 const common_1 = require("@nestjs/common");
 const clients_service_1 = require("./clients.service");
-const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
-const roles_guard_1 = require("../auth/roles.guard");
-const roles_decorator_1 = require("../auth/roles.decorator");
-const role_enum_1 = require("../auth/role.enum");
-const create_client_dto_1 = require("./dto/create-client.dto");
-const update_client_dto_1 = require("./dto/update-client.dto");
 let ClientsController = class ClientsController {
     constructor(clientsService) {
         this.clientsService = clientsService;
     }
-    findAll() {
-        return this.clientsService.findAll();
+    async findAll() {
+        return await this.clientsService.findAll();
     }
-    findOne(id) {
-        return this.clientsService.findOne(id);
+    async findOne(id) {
+        return await this.clientsService.findOne(id);
     }
-    create(createClientDto) {
-        return this.clientsService.create(createClientDto);
+    async create(createClientDto) {
+        return await this.clientsService.create(createClientDto);
     }
-    update(id, updateClientDto) {
-        return this.clientsService.update(id, updateClientDto);
+    async update(id, updateClientDto) {
+        return await this.clientsService.update(id, updateClientDto);
     }
-    remove(id) {
-        return this.clientsService.remove(id);
+    async remove(id) {
+        return await this.clientsService.remove(id);
     }
 };
 exports.ClientsController = ClientsController;
 __decorate([
     (0, common_1.Get)(),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.ADMIN, role_enum_1.Role.OPERATIONS),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ClientsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.ADMIN, role_enum_1.Role.OPERATIONS),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ClientsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)(),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.ADMIN),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_client_dto_1.CreateClientDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
 ], ClientsController.prototype, "create", null);
 __decorate([
     (0, common_1.Patch)(':id'),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.ADMIN),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, update_client_dto_1.UpdateClientDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", Promise)
 ], ClientsController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.ADMIN),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ClientsController.prototype, "remove", null);
 exports.ClientsController = ClientsController = __decorate([
     (0, common_1.Controller)('clients'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     __metadata("design:paramtypes", [clients_service_1.ClientsService])
 ], ClientsController);
 //# sourceMappingURL=client.controller.js.map

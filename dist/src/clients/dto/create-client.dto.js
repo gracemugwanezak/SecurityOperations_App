@@ -28,4 +28,14 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateClientDto.prototype, "location", void 0);
+__decorate([
+    (0, class_validator_1.IsDateString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateClientDto.prototype, "contractStart", void 0);
+__decorate([
+    (0, class_validator_1.IsDateString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateClientDto.prototype, "contractEnd", void 0);
 //# sourceMappingURL=create-client.dto.js.map

@@ -10,6 +10,8 @@ export declare class PostsController {
             name: string;
             email: string;
             location: string;
+            contractStart: Date;
+            contractEnd: Date;
             createdAt: Date;
         }, unknown> & {};
         guards: ({
@@ -17,7 +19,10 @@ export declare class PostsController {
                 id: number;
                 name: string;
                 idNumber: string;
+                phoneNumber: string | null;
                 homeResidence: string;
+                createdAt: Date;
+                updatedAt: Date;
             }, unknown> & {};
         } & import("@prisma/client/runtime").GetResult<{
             postId: number;
@@ -26,44 +31,74 @@ export declare class PostsController {
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
         title: string;
-        content: string;
+        content: string | null;
         clientId: number;
+        createdAt: Date;
     }, unknown> & {})[]>;
-    findOne(id: number): Promise<{
-        guards: (import("@prisma/client/runtime").GetResult<{
+    create(dto: CreatePostDto): Promise<{
+        client: import("@prisma/client/runtime").GetResult<{
+            id: number;
+            name: string;
+            email: string;
+            location: string;
+            contractStart: Date;
+            contractEnd: Date;
+            createdAt: Date;
+        }, unknown> & {};
+    } & import("@prisma/client/runtime").GetResult<{
+        id: number;
+        title: string;
+        content: string | null;
+        clientId: number;
+        createdAt: Date;
+    }, unknown> & {}>;
+    update(id: number, dto: UpdatePostDto): Promise<import("@prisma/client/runtime").GetResult<{
+        id: number;
+        title: string;
+        content: string | null;
+        clientId: number;
+        createdAt: Date;
+    }, unknown> & {}>;
+    assignGuard(id: number, guardId: number): Promise<import("@prisma/client/runtime").GetResult<{
+        postId: number;
+        guardId: number;
+    }, unknown> & {}>;
+    reassign(id: number, guardIds: number[]): Promise<{
+        client: import("@prisma/client/runtime").GetResult<{
+            id: number;
+            name: string;
+            email: string;
+            location: string;
+            contractStart: Date;
+            contractEnd: Date;
+            createdAt: Date;
+        }, unknown> & {};
+        guards: ({
+            guard: import("@prisma/client/runtime").GetResult<{
+                id: number;
+                name: string;
+                idNumber: string;
+                phoneNumber: string | null;
+                homeResidence: string;
+                createdAt: Date;
+                updatedAt: Date;
+            }, unknown> & {};
+        } & import("@prisma/client/runtime").GetResult<{
             postId: number;
             guardId: number;
         }, unknown> & {})[];
     } & import("@prisma/client/runtime").GetResult<{
         id: number;
         title: string;
-        content: string;
+        content: string | null;
         clientId: number;
-    }, unknown> & {}>;
-    create(createPostDto: CreatePostDto): Promise<import("@prisma/client/runtime").GetResult<{
-        id: number;
-        title: string;
-        content: string;
-        clientId: number;
-    }, unknown> & {}>;
-    update(id: number, updatePostDto: UpdatePostDto): Promise<import("@prisma/client/runtime").GetResult<{
-        id: number;
-        title: string;
-        content: string;
-        clientId: number;
+        createdAt: Date;
     }, unknown> & {}>;
     remove(id: number): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
         title: string;
-        content: string;
+        content: string | null;
         clientId: number;
-    }, unknown> & {}>;
-    addGuard(postId: number, guardId: number): Promise<import("@prisma/client/runtime").GetResult<{
-        postId: number;
-        guardId: number;
-    }, unknown> & {}>;
-    removeGuard(postId: number, guardId: number): Promise<import("@prisma/client/runtime").GetResult<{
-        postId: number;
-        guardId: number;
+        createdAt: Date;
     }, unknown> & {}>;
 }

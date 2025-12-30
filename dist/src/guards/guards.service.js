@@ -20,7 +20,9 @@ let GuardsService = class GuardsService {
         return this.prisma.guard.findMany({
             include: {
                 posts: {
-                    include: { post: true }
+                    include: {
+                        post: { include: { client: true } }
+                    }
                 }
             }
         });
@@ -29,18 +31,53 @@ let GuardsService = class GuardsService {
         const guard = await this.prisma.guard.findUnique({
             where: { id },
             include: {
-                posts: { include: { post: true } }
+                posts: {
+                    include: {
+                        post: { include: { client: true } }
+                    }
+                }
             }
         });
         if (!guard)
             throw new common_1.NotFoundException(`Guard with ID ${id} not found`);
         return guard;
     }
+    async reassign(idParam, postId) {
+        const guard = await this.prisma.guard.findFirst({
+            where: {
+                OR: [
+                    { id: idParam },
+                    { idNumber: idParam.toString() }
+                ]
+            }
+        });
+        if (!guard) {
+            throw new common_1.NotFoundException(`Guard not found with ID or National ID: ${idParam}`);
+        }
+        return this.prisma.$transaction(async (tx) => {
+            await tx.postGuard.deleteMany({
+                where: { postId }
+            });
+            await tx.postGuard.deleteMany({
+                where: { guardId: guard.id }
+            });
+            return tx.postGuard.create({
+                data: {
+                    guardId: guard.id,
+                    postId: postId,
+                },
+                include: {
+                    post: { include: { client: true } }
+                }
+            });
+        });
+    }
     async create(createGuardDto) {
         return this.prisma.guard.create({
             data: {
                 name: createGuardDto.name,
                 idNumber: createGuardDto.idNumber,
+                phoneNumber: createGuardDto.phoneNumber,
                 homeResidence: createGuardDto.homeResidence,
             },
         });

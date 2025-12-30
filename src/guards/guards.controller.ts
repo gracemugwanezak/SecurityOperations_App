@@ -7,34 +7,42 @@ import { UpdateGuardDto } from './dto/update-guard.dto';
 export class GuardsController {
     constructor(private readonly guardsService: GuardsService) { }
 
-    // 1. CREATE NEW GUARD
+    @Patch('actions/reassign/:id/:postId')
+    async reassign(
+        @Param('id') id: string,
+        @Param('postId') postId: string,
+    ) {
+        const guardIdNum = Number(id);
+        const postIdNum = Number(postId);
+        return this.guardsService.reassign(guardIdNum, postIdNum);
+    }
+
+    // NEW ENDPOINT FOR UNASSIGNING
+    @Delete(':id/assignment')
+    async unassign(@Param('id', ParseIntPipe) id: number) {
+        return this.guardsService.unassign(id);
+    }
+
     @Post()
     create(@Body() createGuardDto: CreateGuardDto) {
         return this.guardsService.create(createGuardDto);
     }
 
-    // 2. GET ALL GUARDS (For your Square Card Grid)
     @Get()
     findAll() {
         return this.guardsService.findAll();
     }
 
-    // 3. GET ONE SPECIFIC GUARD
     @Get(':id')
     findOne(@Param('id', ParseIntPipe) id: number) {
         return this.guardsService.findOne(id);
     }
 
-    // 4. UPDATE GUARD INFO
     @Patch(':id')
-    update(
-        @Param('id', ParseIntPipe) id: number,
-        @Body() updateGuardDto: UpdateGuardDto
-    ) {
-        return this.guardsService.update(id, updateGuardDto);
+    update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateGuardDto) {
+        return this.guardsService.update(id, dto);
     }
 
-    // 5. REMOVE GUARD FROM SYSTEM
     @Delete(':id')
     remove(@Param('id', ParseIntPipe) id: number) {
         return this.guardsService.remove(id);

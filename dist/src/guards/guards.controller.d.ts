@@ -2,60 +2,119 @@ import { GuardsService } from './guards.service';
 import { CreateGuardDto } from './dto/create-guard.dto';
 import { UpdateGuardDto } from './dto/update-guard.dto';
 export declare class GuardsController {
-    private guardsService;
+    private readonly guardsService;
     constructor(guardsService: GuardsService);
-    findAll(): Promise<({
-        posts: ({
-            post: import("@prisma/client/runtime").GetResult<{
+    reassign(guardId: number, postId: number): Promise<{
+        post: {
+            client: import("@prisma/client/runtime").GetResult<{
                 id: number;
-                title: string;
-                content: string;
-                clientId: number;
+                name: string;
+                email: string;
+                location: string;
+                contractStart: Date;
+                contractEnd: Date;
+                createdAt: Date;
             }, unknown> & {};
         } & import("@prisma/client/runtime").GetResult<{
-            postId: number;
-            guardId: number;
-        }, unknown> & {})[];
+            id: number;
+            title: string;
+            content: string | null;
+            clientId: number;
+            createdAt: Date;
+        }, unknown> & {};
     } & import("@prisma/client/runtime").GetResult<{
-        id: number;
-        name: string;
-        idNumber: string;
-        homeResidence: string;
-    }, unknown> & {})[]>;
-    findOne(id: string): Promise<{
-        posts: ({
-            post: import("@prisma/client/runtime").GetResult<{
-                id: number;
-                title: string;
-                content: string;
-                clientId: number;
-            }, unknown> & {};
-        } & import("@prisma/client/runtime").GetResult<{
-            postId: number;
-            guardId: number;
-        }, unknown> & {})[];
-    } & import("@prisma/client/runtime").GetResult<{
-        id: number;
-        name: string;
-        idNumber: string;
-        homeResidence: string;
+        postId: number;
+        guardId: number;
     }, unknown> & {}>;
     create(createGuardDto: CreateGuardDto): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
         name: string;
         idNumber: string;
+        phoneNumber: string | null;
         homeResidence: string;
+        createdAt: Date;
+        updatedAt: Date;
     }, unknown> & {}>;
-    update(id: string, updateGuardDto: UpdateGuardDto): Promise<import("@prisma/client/runtime").GetResult<{
+    findAll(): Promise<({
+        posts: ({
+            post: {
+                client: import("@prisma/client/runtime").GetResult<{
+                    id: number;
+                    name: string;
+                    email: string;
+                    location: string;
+                    contractStart: Date;
+                    contractEnd: Date;
+                    createdAt: Date;
+                }, unknown> & {};
+            } & import("@prisma/client/runtime").GetResult<{
+                id: number;
+                title: string;
+                content: string | null;
+                clientId: number;
+                createdAt: Date;
+            }, unknown> & {};
+        } & import("@prisma/client/runtime").GetResult<{
+            postId: number;
+            guardId: number;
+        }, unknown> & {})[];
+    } & import("@prisma/client/runtime").GetResult<{
         id: number;
         name: string;
         idNumber: string;
+        phoneNumber: string | null;
         homeResidence: string;
-    }, unknown> & {}>;
-    remove(id: string): Promise<import("@prisma/client/runtime").GetResult<{
+        createdAt: Date;
+        updatedAt: Date;
+    }, unknown> & {})[]>;
+    findOne(id: number): Promise<{
+        posts: ({
+            post: {
+                client: import("@prisma/client/runtime").GetResult<{
+                    id: number;
+                    name: string;
+                    email: string;
+                    location: string;
+                    contractStart: Date;
+                    contractEnd: Date;
+                    createdAt: Date;
+                }, unknown> & {};
+            } & import("@prisma/client/runtime").GetResult<{
+                id: number;
+                title: string;
+                content: string | null;
+                clientId: number;
+                createdAt: Date;
+            }, unknown> & {};
+        } & import("@prisma/client/runtime").GetResult<{
+            postId: number;
+            guardId: number;
+        }, unknown> & {})[];
+    } & import("@prisma/client/runtime").GetResult<{
         id: number;
         name: string;
         idNumber: string;
+        phoneNumber: string | null;
         homeResidence: string;
+        createdAt: Date;
+        updatedAt: Date;
+    }, unknown> & {}>;
+    update(id: number, dto: UpdateGuardDto): Promise<import("@prisma/client/runtime").GetResult<{
+        id: number;
+        name: string;
+        idNumber: string;
+        phoneNumber: string | null;
+        homeResidence: string;
+        createdAt: Date;
+        updatedAt: Date;
+    }, unknown> & {}>;
+    remove(id: number): Promise<import("@prisma/client/runtime").GetResult<{
+        id: number;
+        name: string;
+        idNumber: string;
+        phoneNumber: string | null;
+        homeResidence: string;
+        createdAt: Date;
+        updatedAt: Date;
     }, unknown> & {}>;
 }

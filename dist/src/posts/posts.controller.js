@@ -15,10 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsController = void 0;
 const common_1 = require("@nestjs/common");
 const posts_service_1 = require("./posts.service");
-const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
-const roles_guard_1 = require("../auth/roles.guard");
-const roles_decorator_1 = require("../auth/roles.decorator");
-const role_enum_1 = require("../auth/role.enum");
 const create_post_dto_1 = require("./dto/create-post.dto");
 const update_post_dto_1 = require("./dto/update-post.dto");
 let PostsController = class PostsController {
@@ -28,45 +24,31 @@ let PostsController = class PostsController {
     findAll() {
         return this.postsService.findAll();
     }
-    findOne(id) {
-        return this.postsService.findOne(id);
+    create(dto) {
+        return this.postsService.create(dto);
     }
-    create(createPostDto) {
-        return this.postsService.create(createPostDto);
+    update(id, dto) {
+        return this.postsService.update(id, dto);
     }
-    update(id, updatePostDto) {
-        return this.postsService.update(id, updatePostDto);
+    async assignGuard(id, guardId) {
+        return this.postsService.addGuard(id, guardId);
+    }
+    async reassign(id, guardIds) {
+        return this.postsService.reassignGuards(id, guardIds || []);
     }
     remove(id) {
         return this.postsService.remove(id);
-    }
-    async addGuard(postId, guardId) {
-        return this.postsService.addGuard(postId, guardId);
-    }
-    removeGuard(postId, guardId) {
-        return this.postsService.removeGuard(postId, guardId);
     }
 };
 exports.PostsController = PostsController;
 __decorate([
     (0, common_1.Get)(),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], PostsController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", void 0)
-], PostsController.prototype, "findOne", null);
-__decorate([
     (0, common_1.Post)(),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.ADMIN),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_post_dto_1.CreatePostDto]),
@@ -74,8 +56,6 @@ __decorate([
 ], PostsController.prototype, "create", null);
 __decorate([
     (0, common_1.Put)(':id'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.ADMIN),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -83,32 +63,28 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], PostsController.prototype, "update", null);
 __decorate([
+    (0, common_1.Patch)(':id/assign'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)('guardId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "assignGuard", null);
+__decorate([
+    (0, common_1.Patch)(':id/reassign'),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)('guardIds')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Array]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "reassign", null);
+__decorate([
     (0, common_1.Delete)(':id'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.ADMIN),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", void 0)
 ], PostsController.prototype, "remove", null);
-__decorate([
-    (0, common_1.Post)(':postId/guards/:guardId'),
-    __param(0, (0, common_1.Param)('postId', common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Param)('guardId', common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number]),
-    __metadata("design:returntype", Promise)
-], PostsController.prototype, "addGuard", null);
-__decorate([
-    (0, common_1.Delete)(':postId/guards/:guardId'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)(role_enum_1.Role.OPERATIONS, role_enum_1.Role.ADMIN),
-    __param(0, (0, common_1.Param)('postId', common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Param)('guardId', common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Number]),
-    __metadata("design:returntype", void 0)
-], PostsController.prototype, "removeGuard", null);
 exports.PostsController = PostsController = __decorate([
     (0, common_1.Controller)('posts'),
     __metadata("design:paramtypes", [posts_service_1.PostsService])

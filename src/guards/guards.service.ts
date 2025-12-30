@@ -35,27 +35,47 @@ export class GuardsService {
     }
 
     /**
-     * Updated Reassign Logic
-     * Clears both the guard's old position AND the destination's current occupant.
+     * Remove a guard from their current post assignment
      */
-    async reassign(guardId: number, postId: number) {
+    async unassign(guardId: number) {
+        return this.prisma.postGuard.deleteMany({
+            where: { guardId: guardId }
+        });
+    }
+
+    /**
+     * Reassign Logic: Clears old assignments and sets a new one
+     */
+    async reassign(idParam: number, postId: number) {
+        const guard = await this.prisma.guard.findFirst({
+            where: {
+                OR: [
+                    { id: idParam },
+                    { idNumber: idParam.toString() }
+                ]
+            }
+        });
+
+        if (!guard) {
+            throw new NotFoundException(`Guard not found with ID or National ID: ${idParam}`);
+        }
+
         return this.prisma.$transaction(async (tx) => {
-            // 1. Remove ANYONE currently assigned to the target post
-            // This prevents "Unique Constraint" failures if the post is occupied.
+            // 1. Clear anyone currently assigned to the destination post (ensure 1 guard per post)
             await tx.postGuard.deleteMany({
                 where: { postId }
             });
 
-            // 2. Remove this specific guard from any other posts they might be at
+            // 2. Clear this specific guard from any existing assignments
             await tx.postGuard.deleteMany({
-                where: { guardId }
+                where: { guardId: guard.id }
             });
 
-            // 3. Create new clean assignment
+            // 3. Create the new assignment
             return tx.postGuard.create({
                 data: {
-                    guardId,
-                    postId,
+                    guardId: guard.id,
+                    postId: postId,
                 },
                 include: {
                     post: { include: { client: true } }
@@ -65,7 +85,6 @@ export class GuardsService {
     }
 
     async create(createGuardDto: CreateGuardDto) {
-        // Explicitly mapping phoneNumber to ensure it reaches the database
         return this.prisma.guard.create({
             data: {
                 name: createGuardDto.name,

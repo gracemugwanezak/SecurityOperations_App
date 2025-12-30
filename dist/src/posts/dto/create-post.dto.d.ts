@@ -1,5 +1,5 @@
 export declare class CreatePostDto {
     title: string;
-    content: string;
+    content?: string;
     clientId: number;
 }

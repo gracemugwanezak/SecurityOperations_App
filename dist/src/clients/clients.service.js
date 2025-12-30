@@ -16,41 +16,83 @@ let ClientsService = class ClientsService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async create(createClientDto) {
+    formatToISO(dateInput) {
+        const date = new Date(dateInput);
+        if (isNaN(date.getTime())) {
+            throw new common_1.BadRequestException(`Invalid date format received: ${dateInput}`);
+        }
+        return date.toISOString();
+    }
+    async create(data) {
+        const contractStart = this.formatToISO(data.contractStart);
+        const contractEnd = this.formatToISO(data.contractEnd);
         return this.prisma.client.create({
-            data: createClientDto,
+            data: {
+                name: data.name,
+                email: data.email,
+                location: data.location,
+                contractStart,
+                contractEnd,
+            },
         });
     }
     async findAll() {
-        return this.prisma.client.findMany({
-            include: { posts: true },
+        const clients = await this.prisma.client.findMany({
+            include: {
+                posts: { include: { guards: true } },
+            },
+            orderBy: { createdAt: 'desc' },
         });
+        return clients.map((client) => ({
+            ...client,
+            postCount: client.posts.length,
+            guardCount: client.posts.reduce((acc, post) => acc + (post.guards?.length || 0), 0),
+        }));
     }
     async findOne(id) {
         const client = await this.prisma.client.findUnique({
             where: { id },
-            include: { posts: true },
+            include: {
+                posts: { include: { guards: true } },
+            },
         });
-        if (!client) {
+        if (!client)
             throw new common_1.NotFoundException(`Client with ID ${id} not found`);
-        }
-        return client;
+        return {
+            ...client,
+            postCount: client.posts.length,
+            guardCount: client.posts.reduce((acc, post) => acc + (post.guards?.length || 0), 0),
+        };
     }
-    async update(id, updateClientDto) {
+    async update(id, data) {
+        const updateData = {
+            name: data.name,
+            email: data.email,
+            location: data.location
+        };
+        if (data.contractStart)
+            updateData.contractStart = this.formatToISO(data.contractStart);
+        if (data.contractEnd)
+            updateData.contractEnd = this.formatToISO(data.contractEnd);
         try {
             return await this.prisma.client.update({
                 where: { id },
-                data: updateClientDto,
+                data: updateData,
             });
         }
         catch (error) {
-            throw new common_1.NotFoundException(`Client with ID ${id} not found or update failed`);
+            throw new common_1.NotFoundException(`Client with ID ${id} not found`);
         }
     }
     async remove(id) {
-        return this.prisma.client.delete({
-            where: { id },
-        });
+        try {
+            return await this.prisma.client.delete({
+                where: { id },
+            });
+        }
+        catch (error) {
+            throw new common_1.NotFoundException(`Client with ID ${id} not found or could not be deleted`);
+        }
     }
 };
 exports.ClientsService = ClientsService;

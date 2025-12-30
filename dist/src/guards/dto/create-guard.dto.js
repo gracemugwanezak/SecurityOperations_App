@@ -28,5 +28,10 @@ __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
+], CreateGuardDto.prototype, "phoneNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
 ], CreateGuardDto.prototype, "homeResidence", void 0);
 //# sourceMappingURL=create-guard.dto.js.map

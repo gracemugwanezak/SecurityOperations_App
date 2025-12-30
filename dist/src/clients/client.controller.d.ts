@@ -1,49 +1,69 @@
 import { ClientsService } from './clients.service';
-import { CreateClientDto } from './dto/create-client.dto';
-import { UpdateClientDto } from './dto/update-client.dto';
 export declare class ClientsController {
-    private clientsService;
+    private readonly clientsService;
     constructor(clientsService: ClientsService);
-    findAll(): Promise<({
-        posts: (import("@prisma/client/runtime").GetResult<{
+    findAll(): Promise<{
+        postCount: number;
+        guardCount: number;
+        posts: ({
+            guards: (import("@prisma/client/runtime").GetResult<{
+                postId: number;
+                guardId: number;
+            }, unknown> & {})[];
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
             title: string;
-            content: string;
+            content: string | null;
             clientId: number;
+            createdAt: Date;
         }, unknown> & {})[];
-    } & import("@prisma/client/runtime").GetResult<{
-        id: number;
-        name: string;
         email: string;
-        location: string;
+        name: string;
+        id: number;
         createdAt: Date;
-    }, unknown> & {})[]>;
+        location: string;
+        contractStart: Date;
+        contractEnd: Date;
+    }[]>;
     findOne(id: number): Promise<{
-        posts: (import("@prisma/client/runtime").GetResult<{
+        postCount: number;
+        guardCount: number;
+        posts: ({
+            guards: (import("@prisma/client/runtime").GetResult<{
+                postId: number;
+                guardId: number;
+            }, unknown> & {})[];
+        } & import("@prisma/client/runtime").GetResult<{
             id: number;
             title: string;
-            content: string;
+            content: string | null;
             clientId: number;
+            createdAt: Date;
         }, unknown> & {})[];
-    } & import("@prisma/client/runtime").GetResult<{
+        email: string;
+        name: string;
+        id: number;
+        createdAt: Date;
+        location: string;
+        contractStart: Date;
+        contractEnd: Date;
+    }>;
+    create(createClientDto: any): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
         name: string;
         email: string;
         location: string;
+        contractStart: Date;
+        contractEnd: Date;
         createdAt: Date;
     }, unknown> & {}>;
-    create(createClientDto: CreateClientDto): Promise<import("@prisma/client/runtime").GetResult<{
+    update(id: number, updateClientDto: any): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
         name: string;
         email: string;
         location: string;
-        createdAt: Date;
-    }, unknown> & {}>;
-    update(id: number, updateClientDto: UpdateClientDto): Promise<import("@prisma/client/runtime").GetResult<{
-        id: number;
-        name: string;
-        email: string;
-        location: string;
+        contractStart: Date;
+        contractEnd: Date;
         createdAt: Date;
     }, unknown> & {}>;
     remove(id: number): Promise<import("@prisma/client/runtime").GetResult<{
@@ -51,6 +71,8 @@ export declare class ClientsController {
         name: string;
         email: string;
         location: string;
+        contractStart: Date;
+        contractEnd: Date;
         createdAt: Date;
     }, unknown> & {}>;
 }

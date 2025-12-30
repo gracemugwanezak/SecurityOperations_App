@@ -20,65 +20,60 @@ let PostsService = class PostsService {
         return this.prisma.post.findMany({
             include: {
                 client: true,
-                guards: {
-                    include: {
-                        guard: true
-                    }
-                }
+                guards: { include: { guard: true } }
             },
+            orderBy: { createdAt: 'desc' }
         });
     }
-    async findOne(id) {
-        const post = await this.prisma.post.findUnique({
-            where: { id },
-            include: { guards: true }
-        });
-        if (!post)
-            throw new common_1.NotFoundException(`Post #${id} not found`);
-        return post;
-    }
-    async create(createPostDto) {
+    async create(dto) {
         return this.prisma.post.create({
-            data: createPostDto,
+            data: {
+                title: dto.title,
+                content: dto.content,
+                clientId: Number(dto.clientId),
+            },
+            include: { client: true }
         });
     }
-    async update(id, updatePostDto) {
+    async update(id, dto) {
         try {
             return await this.prisma.post.update({
                 where: { id },
-                data: updatePostDto,
+                data: dto,
             });
         }
         catch (error) {
-            throw new common_1.NotFoundException(`Post #${id} not found or update failed`);
+            throw new common_1.NotFoundException(`Post #${id} not found`);
         }
+    }
+    async reassignGuards(postId, guardIds) {
+        return this.prisma.$transaction(async (tx) => {
+            await tx.postGuard.deleteMany({ where: { postId } });
+            if (guardIds.length > 0) {
+                await tx.postGuard.createMany({
+                    data: guardIds.map(id => ({ postId, guardId: id }))
+                });
+            }
+            return tx.post.findUnique({
+                where: { id: postId },
+                include: { client: true, guards: { include: { guard: true } } }
+            });
+        });
     }
     async remove(id) {
-        try {
-            return await this.prisma.post.delete({
-                where: { id },
-            });
-        }
-        catch (error) {
-            throw new common_1.NotFoundException(`Post #${id} not found or already deleted`);
-        }
+        return this.prisma.post.delete({ where: { id } });
     }
     async addGuard(postId, guardId) {
-        return this.prisma.postGuard.create({
-            data: {
-                postId: postId,
-                guardId: guardId
-            }
+        return this.prisma.$transaction(async (tx) => {
+            await tx.postGuard.deleteMany({ where: { guardId } });
+            return tx.postGuard.create({
+                data: { postId, guardId }
+            });
         });
     }
     async removeGuard(postId, guardId) {
         return this.prisma.postGuard.delete({
-            where: {
-                postId_guardId: {
-                    postId: postId,
-                    guardId: guardId
-                }
-            }
+            where: { postId_guardId: { postId, guardId } }
         });
     }
 };
