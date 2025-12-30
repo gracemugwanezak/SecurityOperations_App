@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsOptional, Min } from 'class-validator';
 
 export class CreatePostDto {
     @IsString()
@@ -11,5 +11,15 @@ export class CreatePostDto {
 
     @IsNumber()
     @IsNotEmpty()
-    clientId: number; // The parent Client ID
+    clientId: number;
+
+    @IsNumber()
+    @Min(0)
+    @IsOptional()
+    requiredDayGuards?: number; // Optional in DTO, but has DB default
+
+    @IsNumber()
+    @Min(0)
+    @IsOptional()
+    requiredNightGuards?: number;
 }

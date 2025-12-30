@@ -31,13 +31,17 @@ model Client {
 }
 
 model Post {
-  id        Int         @id @default(autoincrement())
-  title     String
-  content   String?     @default("ACTIVE DEPLOYMENT")
-  clientId  Int
-  client    Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  guards    PostGuard[]
-  createdAt DateTime    @default(now()) // <--- Add this line
+  id                  Int         @id @default(autoincrement())
+  title               String
+  content             String?     @default("ACTIVE DEPLOYMENT")
+  // New Quota Fields
+  requiredDayGuards   Int         @default(1) // Default to 1 guard
+  requiredNightGuards Int         @default(1) // Default to 1 guard
+  
+  clientId            Int
+  client              Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  guards              PostGuard[]
+  createdAt           DateTime    @default(now())
 }
 
 model Guard {
