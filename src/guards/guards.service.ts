@@ -35,18 +35,12 @@ export class GuardsService {
     }
 
     /**
-     * Remove a guard from their current post assignment
+     * Reassign Logic: Multi-Guard / Shift-Aware
+     * Moves a specific guard to a post/shift.
+     * Enforces the rule that a guard can only have ONE active deployment.
      */
-    async unassign(guardId: number) {
-        return this.prisma.postGuard.deleteMany({
-            where: { guardId: guardId }
-        });
-    }
-
-    /**
-     * Reassign Logic: Clears old assignments and sets a new one
-     */
-    async reassign(idParam: number, postId: number) {
+    async reassign(idParam: number, postId: number, shift: string, startDate?: string) {
+        // 1. Find the guard by Database ID or National ID
         const guard = await this.prisma.guard.findFirst({
             where: {
                 OR: [
@@ -61,26 +55,34 @@ export class GuardsService {
         }
 
         return this.prisma.$transaction(async (tx) => {
-            // 1. Clear anyone currently assigned to the destination post (ensure 1 guard per post)
-            await tx.postGuard.deleteMany({
-                where: { postId }
-            });
-
-            // 2. Clear this specific guard from any existing assignments
+            // 2. Clear THIS SPECIFIC guard from any current assignment
+            // (Database constraint @@unique([guardId]) ensures they only have one)
             await tx.postGuard.deleteMany({
                 where: { guardId: guard.id }
             });
 
-            // 3. Create the new assignment
+            // 3. Create the new assignment for this guard
             return tx.postGuard.create({
                 data: {
                     guardId: guard.id,
                     postId: postId,
+                    shift: shift,
+                    assignedAt: startDate ? new Date(startDate) : new Date(),
                 },
                 include: {
-                    post: { include: { client: true } }
+                    post: { include: { client: true } },
+                    guard: true
                 }
             });
+        });
+    }
+
+    /**
+     * Remove a guard from their current post assignment
+     */
+    async unassign(guardId: number) {
+        return this.prisma.postGuard.deleteMany({
+            where: { guardId: guardId }
         });
     }
 

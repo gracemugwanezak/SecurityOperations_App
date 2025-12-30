@@ -53,12 +53,19 @@ model Guard {
   updatedAt     DateTime    @default(now()) @updatedAt 
 }
 
-model PostGuard {
-  postId  Int
-  guardId Int
-  // Cascade is already correctly here
-  post    Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
-  guard   Guard @relation(fields: [guardId], references: [id], onDelete: Cascade)
+// schema.prisma
 
-  @@id([postId, guardId])
+model PostGuard {
+  id         Int      @id @default(autoincrement())
+  postId     Int
+  guardId    Int
+  shift      String   @default("DAY") // "DAY", "NIGHT", or "RELIEVER"
+  assignedAt DateTime @default(now())
+
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  guard      Guard    @relation(fields: [guardId], references: [id], onDelete: Cascade)
+
+  // We only keep a unique constraint on the Guard to ensure one person 
+  // isn't deployed to two different places at the same time.
+  @@unique([guardId]) 
 }
